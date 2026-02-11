@@ -41,3 +41,86 @@ Created `record_date` from separate `months` and `years` columns using:
 
 ```sql
 TO_DATE(TRIM(years) || ' ' || TRIM(months) || ' 01', 'YYYY Month DD')
+
+
+
+
+
+---
+
+# 📂 Key_SQL_Queries.sql
+
+
+
+```sql
+-- ============================================
+-- 1️⃣ Channel Revenue (2025)
+-- ============================================
+
+SELECT channel,
+       SUM(sales) AS revenue
+FROM sales
+WHERE EXTRACT(YEAR FROM record_date) = 2025
+GROUP BY channel
+ORDER BY revenue DESC;
+
+
+-- ============================================
+-- 2️⃣ Subchannel Performance (Pharmacy Only)
+-- ============================================
+
+SELECT subchannel,
+       SUM(sales) AS revenue
+FROM sales
+WHERE channel = 'Pharmacy'
+GROUP BY subchannel
+ORDER BY revenue DESC;
+
+
+-- ============================================
+-- 3️⃣ Overall Subchannel Ranking
+-- ============================================
+
+SELECT subchannel,
+       SUM(sales) AS revenue
+FROM sales
+GROUP BY subchannel
+ORDER BY revenue DESC;
+
+
+-- ============================================
+-- 4️⃣ Revenue Trend by Year
+-- ============================================
+
+SELECT EXTRACT(YEAR FROM record_date) AS sales_year,
+       SUM(sales) AS revenue
+FROM sales
+GROUP BY sales_year
+ORDER BY sales_year;
+
+
+-- ============================================
+-- 5️⃣ Revenue by Product Class
+-- ============================================
+
+SELECT p.productclass,
+       SUM(s.sales) AS revenue
+FROM sales s
+JOIN producttable p
+  ON s.productid = p.productid
+GROUP BY p.productclass
+ORDER BY revenue DESC;
+
+
+-- ============================================
+-- 6️⃣ Demand (Volume) by Product Class
+-- ============================================
+
+SELECT p.productclass,
+       SUM(s.quantity) AS volume
+FROM sales s
+JOIN producttable p
+  ON s.productid = p.productid
+GROUP BY p.productclass
+ORDER BY volume DESC;
+
